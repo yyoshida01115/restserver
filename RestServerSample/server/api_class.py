@@ -19,13 +19,10 @@ class StorageFirmware(object):
 
 
 class ApiServerFactory(object):
-
-    apiserver=None
     
     def __init(self):
-        apiserver = falcon.API()
-        apiserver.add_route("/storage-firmware", StorageFirmware())
-        self.apiserver=apiserver
+        self.apiserver = falcon.API()
+        self.apiserver.add_route("/storage-firmware", StorageFirmware())
         
     def getApiServer(self):
         return self.apiserver
