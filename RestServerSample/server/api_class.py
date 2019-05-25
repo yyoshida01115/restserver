@@ -5,7 +5,6 @@ Created on 2019/05/23
 '''
 
 import json
-import falcon
 
 class StorageFirmware(object):
 
@@ -18,12 +17,3 @@ class StorageFirmware(object):
         
 
 
-class ApiServerFactory(object):
-    
-    def __init(self):
-        self.apiserver = falcon.API()
-        self.apiserver.add_route("/storage-firmware", StorageFirmware())
-        
-    def getApiServer(self):
-        return self.apiserver
-        

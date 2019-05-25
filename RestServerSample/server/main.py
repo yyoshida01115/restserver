@@ -5,6 +5,7 @@ Created on 2019/05/23
 '''
 from server import api_class
 import sys
+import falcon
 
 def server_logger():
 	from logging import getLogger,StreamHandler,FileHandler, DEBUG
@@ -23,8 +24,9 @@ def server_main():
 	logger=server_logger()
 	try:
 		from wsgiref import simple_server
-		app = api_class.ApiServerFactory()
-		httpd = simple_server.make_server("0.0.0.0", 18888, app.getApiServer())
+		apiserver = falcon.API()
+		apiserver.add_route("/storage-firmware", api_class.StorageFirmware())
+		httpd = simple_server.make_server("0.0.0.0", 18888, apiserver)
 		httpd.serve_forever()
 	except KeyboardInterrupt:
 		sys.exit(0)
