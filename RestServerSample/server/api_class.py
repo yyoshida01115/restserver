@@ -7,6 +7,8 @@ Created on 2019/05/23
 import json
 
 class StorageFirmware(object):
+    
+    uri = "/storage-firmware"
 
     def on_get(self, req, resp):
 

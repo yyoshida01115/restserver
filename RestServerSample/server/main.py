@@ -25,7 +25,10 @@ def server_main():
 	try:
 		from wsgiref import simple_server
 		apiserver = falcon.API()
-		apiserver.add_route("/storage-firmware", api_class.StorageFirmware())
+		apis=[]
+		apis.append(api_class.StorageFirmware())
+		for api in apis:
+			apiserver.add_route(api.uri, api)
 		httpd = simple_server.make_server("0.0.0.0", 18888, apiserver)
 		httpd.serve_forever()
 	except KeyboardInterrupt:
