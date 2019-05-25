@@ -20,8 +20,8 @@ def server_logger():
 	return logger
 
 def server_main():
+	logger=server_logger()
 	try:
-		logger=server_logger()
 		from wsgiref import simple_server
 		app = api_class.ApiServerFactory()
 		httpd = simple_server.make_server("0.0.0.0", 18888, app.getApiServer())
