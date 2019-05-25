@@ -9,7 +9,12 @@ import sys
 import falcon
 
 def server_main():
-	logger=logger_func.mylogger("server_main")
+	logger=logger_func.mylogger("server_main",'../log/server.log')
+	## https://codeday.me/jp/qa/20190301/342294.html
+	## stdout,stderrをlogger出力
+	sys.stdout = logger_func.LoggerWriter(logger.debug)
+	sys.stderr = logger_func.LoggerWriter(logger.warning)
+	
 	try:
 		from wsgiref import simple_server
 		apiserver = falcon.API()

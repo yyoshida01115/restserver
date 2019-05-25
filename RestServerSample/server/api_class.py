@@ -18,7 +18,7 @@ class Firmware(object):
     uri = "/firmware"
     
     def __init__(self):
-        self.logger=logger_func.mylogger("Firmware")
+        self.logger=logger_func.mylogger("Firmware",'../log/apiclass_firmware.log')
 
     def on_get(self, req, resp):
         try:
@@ -39,7 +39,7 @@ class FirmwareUpdateServicePrecheck(object):
     uri = "/firmware-update-service/precheck"
     
     def __init__(self):
-        self.logger=logger_func.mylogger("FirmwareUpdateServicePrecheck")
+        self.logger=logger_func.mylogger("FirmwareUpdateServicePrecheck",'../log/apiclass_firmware_update_service_precheck.log')
 
     def on_post(self, req, resp):
         try:
