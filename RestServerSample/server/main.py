@@ -3,7 +3,7 @@ Created on 2019/05/23
 
 @author: yutaka
 '''
-from server import api_class
+from . import api_class
 
 if __name__ == '__main__':
     from wsgiref import simple_server
