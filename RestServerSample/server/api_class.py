@@ -19,6 +19,8 @@ class StorageFirmware(object):
 
 
 class ApiServerFactory(object):
+
+    apiserver=None
     
     def __init(self):
         apiserver = falcon.API()
