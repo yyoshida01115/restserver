@@ -10,7 +10,7 @@ def server_main():
 	try:
 		from wsgiref import simple_server
 		app = api_class.ApiServerFactory()
-		httpd = simple_server.make_server("127.0.0.1", 8888, app.getApiServer())
+		httpd = simple_server.make_server("0.0.0.0", 8888, app.getApiServer())
 		httpd.serve_forever()
 	except KeyboardInterrupt:
 		sys.exit(0)
