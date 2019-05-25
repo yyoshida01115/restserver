@@ -3,7 +3,7 @@ Created on 2019/05/23
 
 @author: yutaka
 '''
-from . import api_class
+from server import api_class
 import sys
 
 def server_main():
