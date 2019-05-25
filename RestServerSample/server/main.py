@@ -6,7 +6,7 @@ Created on 2019/05/23
 from . import api_class
 import sys
 
-if __name__ == '__main__':
+def server_main():
 	try:
 		from wsgiref import simple_server
 		app = api_class.ApiServerFactory()
@@ -14,3 +14,6 @@ if __name__ == '__main__':
 		httpd.serve_forever()
 	except KeyboardInterrupt:
 		sys.exit(0)
+		
+if __name__ == '__main__':
+	server_main()
