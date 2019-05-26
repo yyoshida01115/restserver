@@ -16,6 +16,8 @@ error_msg={
 
 apiclass_logger=logger_func.mylogger("Sample",'../log/apiclass.log')
 
+_CHUNK_SIZE_BYTES=4096
+
 class MandantryParameterNotSpecifiedException(Exception):
     """
     必須パラメタが指定されていない時の例外
@@ -23,7 +25,7 @@ class MandantryParameterNotSpecifiedException(Exception):
     def __init__ (self, param):
         self._param = param  # メンバ変数に代入
     def getResponse(self):                      # エラーメッセージ
-        msg={"errorMessage":'必須パラメタ "{0}" が指定されていません。'.format (self._param)}
+        msg={"errorMessage":"Parameter '{0}' is not specified.".format (self._param)}
         return(msg)
     
 class WrongSpacifiedValueException(Exception):
@@ -33,13 +35,13 @@ class WrongSpacifiedValueException(Exception):
     def __init__ (self, key,value):
         self._key,self._value = (key,value)  # メンバ変数に代入
     def getResponse(self):                      # エラーメッセージ
-        msg={"errorMessage":'パラメタ "{0}" の値 "{1}" は定義範囲外です。'.format (self._key,self._value)}
+        msg={"errorMessage":"'{1}', a value of parameter '{0}' is wrong value.".format (self._key,self._value)}
         return (msg)
     
 
 def check_postparam(data,param_definition):
     for key,value in param_definition.items():
-        if value == value["mandantry"] and key not in data.keys():
+        if value["mandantry"] and key not in data.keys():
             raise MandantryParameterNotSpecifiedException(key)
     for datakey,datavalue in data.items():
         if datavalue not in param_definition[datakey]["value"]:
@@ -75,21 +77,40 @@ class UploadSample(object):
     def on_post(self, req, res):
         try:
             #filename = req.get_param('name')
-            uploadfile = req.get_param('file')
-            raw = uploadfile.file.read()
-            filepath = '../file/' + datetime.datetime.now().strftime('%Y%m%d%H%M%S') + '.jpg'
-            with open(filepath, 'wb') as f:
-                f.write(raw)
-        
-            resp = {
-                'result': filepath + ' uploaded',
-            }
-            res.body = json.dumps(resp)
+            #uploadfile = req.get_param('file')
+            #raw = uploadfile.file.read()
+            #filepath = '../file/' + datetime.datetime.now().strftime('%Y%m%d%H%M%S') + '.jpg'
+            #with open(filepath, 'wb') as f:
+            #    f.write(raw)
+            assert req.get_param('simple') == 'ok'
+            #assert req.get_param('file').filename == 'afile.txt',req.get_param('afile').filename
+            #assert req.get_param('file').file.read() == b'filecontent',req.get_param('afile').file.read()
+            filename=req.get_param('file').filename
+            with open('../file/upload-%s' % filename,'wb') as savefile:
+                savefile.write(req.get_param('file').file.read())
+            res.body = 'parsed'
+            res.content_type = 'text/plain'
         except:
             apiclass_logger.error(traceback.format_exc())
-            resp.status = falcon.HTTP_500
-            resp.body = json.dumps(error_msg[0])
-        
+            res.status = falcon.HTTP_500
+            res.body = json.dumps(error_msg[0])
+    
+    def on_delete(self, req, res):
+        try:
+            # postパラメーターを取得
+            assert req.get_param('simple')=="ok",req.get_param('simple')
+            
+            msg = {
+                "message": "delete sample",
+            }
+            res.status = falcon.HTTP_200
+            res.body = json.dumps(msg)
+        except:
+            import traceback
+            apiclass_logger.error(traceback.format_exc())
+            res.status = falcon.HTTP_500
+            res.body = json.dumps(error_msg[0]).encode('utf-8')
+
 
 class PostSample(object):
 
@@ -107,11 +128,12 @@ class PostSample(object):
     def on_post(self, req, resp):
         try:
             # postパラメーターを取得
-            #body = req.bounded_stream.read().decode('utf-8')
-            #body = json.dumps(raw_json)
-            body = req.stream.read().decode("utf-8")
-            apiclass_logger.debug(body)
+            body = req.stream.readline().decode("utf-8") 
             data = json.loads(body)
+            
+            ## request param
+            #body=req.get_param_as_list()
+            #apiclass_logger.debug(body)
             
             ## parameter check
             check_postparam(data, self.param_definition)
@@ -124,16 +146,18 @@ class PostSample(object):
         except MandantryParameterNotSpecifiedException as e:
             apiclass_logger.error(traceback.format_exc())
             resp.status = falcon.HTTP_400
-            resp.body = json.dumps(e.getResponse())
+            apiclass_logger.debug(json.dumps(e.getResponse()))
+            resp.body = json.dumps(e.getResponse()).encode('utf-8')
         except WrongSpacifiedValueException as e:
             apiclass_logger.error(traceback.format_exc())
             resp.status = falcon.HTTP_400
-            resp.body = json.dumps(e.getResponse())
+            apiclass_logger.debug(json.dumps(e.getResponse()))
+            resp.body = json.dumps(e.getResponse()).encode('utf-8')
         except:
             apiclass_logger.error(traceback.format_exc())
             resp.status = falcon.HTTP_500
-            resp.body = json.dumps(error_msg[0])
-            
+            resp.body = json.dumps(error_msg[0]).encode('utf-8')
+
             
 class CORSMiddleware:
     def process_request(self, req, resp):

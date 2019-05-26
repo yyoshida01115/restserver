@@ -6,7 +6,7 @@ Created on 2019/05/25
 import urllib.request
 
 if __name__ == '__main__':
-    server_ipaddr="192.168.56.10"
+    server_ipaddr="127.0.0.1"
     server_port=18888
     url="http://%s:%s/sample" % (server_ipaddr,server_port)
     
