@@ -24,11 +24,9 @@ def server_main():
 		apiserver = falcon.API(middleware=[api_class.CORSMiddleware(), MultipartMiddleware()])
 
 		apis=[]
-		apis.append(api_class.Firmware())
-		apis.append(api_class.FirmwareUpdateServicePrecheck())
-		apis.append(api_class.FirmwareUpdateServiceUpdate())
-		apis.append(api_class.FirmwareUpdateServiceCheckversion())
-		apis.append(api_class.FirmwareUpdateServiceUpload())
+		apis.append(api_class.Sample())
+		apis.append(api_class.UploadSample())
+		apis.append(api_class.PostSample())
 
 		for api in apis:
 			apiserver.add_route(api.uri, api)
