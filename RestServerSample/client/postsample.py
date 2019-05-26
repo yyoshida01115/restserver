@@ -15,8 +15,8 @@ if __name__ == '__main__':
         "fruit":"apple",
         "file":"filename"
         }
-    data = urllib.parse.urlencode(data).encode("utf-8")
+    data_str=json.dumps(data).encode("utf-8")
     
-    with urllib.request.urlopen(url=url, data=data) as res:
+    with urllib.request.urlopen(url=url, data=data_str) as res:
         body = res.read().decode("utf-8")
         print(body)

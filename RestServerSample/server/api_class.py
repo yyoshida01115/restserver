@@ -107,10 +107,9 @@ class PostSample(object):
     def on_post(self, req, resp):
         try:
             # postパラメーターを取得
-            raw_json = req.bounded_stream.read()
-            apiclass_logger.info(raw_json)
-            body = json.dumps(raw_json, encoding='utf-8')
-            #body = req.stream.read().decode("utf-8")
+            #body = req.bounded_stream.read().decode('utf-8')
+            #body = json.dumps(raw_json)
+            body = req.stream.read().decode("utf-8")
             apiclass_logger.debug(body)
             data = json.loads(body)
             
