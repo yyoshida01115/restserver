@@ -8,10 +8,13 @@ from common import logger_func
 import json
 import falcon
 import datetime
+import traceback
 
 error_msg={
     0:{"Server side exception occurred. See server log."},
     }
+
+apiclass_logger=logger_func.mylogger("Sample",'../log/apiclass.log')
 
 class MandantryParameterNotSpecifiedException(Exception):
     """
@@ -48,7 +51,7 @@ class Sample(object):
     uri = "/sample"
     
     def __init__(self):
-        self.logger=logger_func.mylogger("Sample",'../log/apiclass.log')
+        pass
 
     def on_get(self, req, resp):
         try:
@@ -58,8 +61,7 @@ class Sample(object):
             resp.status = falcon.HTTP_200
             resp.body = json.dumps(msg)
         except:
-            import traceback
-            self.logger.error(traceback.format_exc())
+            apiclass_logger.error(traceback.format_exc())
             resp.status = falcon.HTTP_500
             resp.body = json.dumps(error_msg[0])
             
@@ -68,7 +70,7 @@ class UploadSample(object):
     uri = "/sample/file"
     
     def __init__(self):
-        self.logger=logger_func.mylogger("Sample",'../log/apiclass.log')
+        pass
 
     def on_post(self, req, res):
         try:
@@ -84,8 +86,7 @@ class UploadSample(object):
             }
             res.body = json.dumps(resp)
         except:
-            import traceback
-            self.logger.error(traceback.format_exc())
+            apiclass_logger.error(traceback.format_exc())
             resp.status = falcon.HTTP_500
             resp.body = json.dumps(error_msg[0])
         
@@ -101,12 +102,13 @@ class PostSample(object):
         }
     
     def __init__(self):
-        self.logger=logger_func.mylogger("Sample",'../log/apiclass.log')
+        pass
         
     def on_post(self, req, resp):
         try:
             # postパラメーターを取得
             body = req.stream.read().decode("utf-8")
+            apiclass_logger.debug(body)
             data = json.loads(body)
             
             ## parameter check
@@ -118,14 +120,15 @@ class PostSample(object):
             resp.status = falcon.HTTP_200
             resp.body = json.dumps(msg)
         except MandantryParameterNotSpecifiedException as e:
+            apiclass_logger.error(traceback.format_exc())
             resp.status = falcon.HTTP_400
             resp.body = json.dumps(e.getResponse())
         except WrongSpacifiedValueException as e:
+            apiclass_logger.error(traceback.format_exc())
             resp.status = falcon.HTTP_400
             resp.body = json.dumps(e.getResponse())
         except:
-            import traceback
-            self.logger.error(traceback.format_exc())
+            apiclass_logger.error(traceback.format_exc())
             resp.status = falcon.HTTP_500
             resp.body = json.dumps(error_msg[0])
             
