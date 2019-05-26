@@ -7,6 +7,7 @@ from server import api_class
 from common import logger_func
 import sys
 import falcon
+from falcon_multipart.middleware import MultipartMiddleware
 
 def server_main():
 	logger=logger_func.mylogger("server_main",'../log/server.log')
@@ -17,11 +18,18 @@ def server_main():
 	
 	try:
 		from wsgiref import simple_server
-		apiserver = falcon.API()
+		## Upload API
+		## Ref https://qiita.com/komakomako/items/5ba6a1b2a582464a7748
+		##
+		apiserver = falcon.API(middleware=[api_class.CORSMiddleware(), MultipartMiddleware()])
+
 		apis=[]
 		apis.append(api_class.Firmware())
 		apis.append(api_class.FirmwareUpdateServicePrecheck())
-		
+		apis.append(api_class.FirmwareUpdateServiceUpdate())
+		apis.append(api_class.FirmwareUpdateServiceCheckversion())
+		apis.append(api_class.FirmwareUpdateServiceUpload())
+
 		for api in apis:
 			apiserver.add_route(api.uri, api)
 		httpd = simple_server.make_server("0.0.0.0", 18888, apiserver)
