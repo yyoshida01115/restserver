@@ -92,7 +92,7 @@ class UploadSample(object):
 
 class PostSample(object):
 
-    uri = "/ample/update"
+    uri = "/sample/post-sample"
     param_definition={
         "fruit":{"mandantry":True,
                 "value":["apple","orange","banana",]},

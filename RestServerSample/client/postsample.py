@@ -11,13 +11,12 @@ if __name__ == '__main__':
     server_port=18888
     url="http://%s:%s/post-sample" % (server_ipaddr,server_port)
     
-    param={
+    data={
         "fruit":"apple",
         "file":"filename"
         }
-    req_body=json.dumps(param)
+    data = urllib.parse.urlencode(data).encode("utf-8")
     
-    req = urllib.request.Request(url,req_body)
-    with urllib.request.urlopen(req) as res:
+    with urllib.request.urlopen(url=url, data=data) as res:
         body = res.read().decode("utf-8")
         print(body)
