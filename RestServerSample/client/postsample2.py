@@ -13,11 +13,14 @@ if __name__ == '__main__':
         url="http://%s:%s/sample/post-sample" % (server_ipaddr,server_port)
         method = "POST"
         data={
-            "fruit":"apple",
-            "file":"filename"
+            "fruite":"orange",
+            "file":"filename",
+            "color":"blue",
             }
+        #headers={"Content-Type":"application / x-www-form-urlencoded"}
         
         r = requests.post(url, data=data)
+        print(r.status_code)
         print(r.text)
     except:
         import traceback

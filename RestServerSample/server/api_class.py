@@ -9,6 +9,7 @@ import json
 import falcon
 import datetime
 import traceback
+from numpy import require
 
 error_msg={
     0:{"Server side exception occurred. See server log."},
@@ -127,27 +128,24 @@ class PostSample(object):
         
     def on_post(self, req, resp):
         try:
-            # postパラメーターを取得
-            body = req.stream.readline().decode("utf-8") 
-            data = json.loads(body)
-            
-            ## request param
-            #body=req.get_param_as_list()
-            #apiclass_logger.debug(body)
-            
-            ## parameter check
-            check_postparam(data, self.param_definition)
+            ## get_param_as_json
+            # https://code-examples.net/ja/docs/falcon~1.4/api/request_and_response#falcon.Request.get_param_as_json
+            data={}
+            for k,v in self.param_definition.items():
+                data[k]=req.get_param(name=k,required=v["mandantry"],default=None)
+                if data[k] not in v["value"]:
+                    raise WrongSpacifiedValueException(k,data[k])
             
             msg = {
                 "message": "Post sample",
+                "data":data,
             }
             resp.status = falcon.HTTP_200
             resp.body = json.dumps(msg)
-        except MandantryParameterNotSpecifiedException as e:
+        except falcon.HTTPBadRequest as e:
             apiclass_logger.error(traceback.format_exc())
-            resp.status = falcon.HTTP_400
-            apiclass_logger.debug(json.dumps(e.getResponse()))
-            resp.body = json.dumps(e.getResponse()).encode('utf-8')
+            resp.status = e.status
+            resp.body = e.to_json().encode('utf-8')
         except WrongSpacifiedValueException as e:
             apiclass_logger.error(traceback.format_exc())
             resp.status = falcon.HTTP_400

@@ -22,7 +22,8 @@ def server_main():
 		## Ref https://qiita.com/komakomako/items/5ba6a1b2a582464a7748
 		##
 		apiserver = falcon.API(middleware=[api_class.CORSMiddleware(), MultipartMiddleware()])
-
+		#https://stackoverflow.com/questions/48679165/python-falcon-get-post-data
+		apiserver.req_options.auto_parse_form_urlencoded=True
 		apis=[]
 		apis.append(api_class.Sample())
 		apis.append(api_class.UploadSample())
