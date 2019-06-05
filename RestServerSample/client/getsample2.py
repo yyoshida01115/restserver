@@ -9,9 +9,12 @@ import requests
 if __name__ == '__main__':
     server_ipaddr="127.0.0.1"
     server_port=18888
-    url="http://%s:%s/sample" % (server_ipaddr,server_port)
+    #url="http://%s:%s/sample" % (server_ipaddr,server_port)
     
-    payload = {'name': 'hello', 'data': 'hello'}
-    r = requests.get(url, params=payload)
+    #payload = {'name': 'hello', 'data': 'hello'}
+    #r = requests.get(url, params=payload)
     
+    url="http://%s:%s/sample?foo=123&bar=456" % (server_ipaddr,server_port)
+    r = requests.get(url)
+
     print(r.text)
