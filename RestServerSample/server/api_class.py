@@ -58,11 +58,14 @@ class Sample(object):
 
     def on_get(self, req, resp):
         try:
-            msg = {
-                "message": "Get Sample",
-            }
+            params = req.params
+            resp.body = json.dumps(params)
+
+            #msg = {
+            #    "message": "Get Sample",
+            #}
             resp.status = falcon.HTTP_200
-            resp.body = json.dumps(msg)
+            #resp.body = json.dumps(msg)
         except:
             apiclass_logger.error(traceback.format_exc())
             resp.status = falcon.HTTP_500
